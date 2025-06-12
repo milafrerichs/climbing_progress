@@ -1,0 +1,11 @@
+<% content_for :title, "New climb log" %>
+
+<h1>New climb log</h1>
+
+<%= render "form", climb_log: @climb_log %>
+
+<br>
+
+<div>
+  <%= link_to "Back to climb logs", climb_logs_path %>
+</div>

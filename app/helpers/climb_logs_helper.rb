@@ -1,0 +1,2 @@
+module ClimbLogsHelper
+end

@@ -4,7 +4,7 @@ class ClimbLogsController < ApplicationController
 
   def index
     @climb_logs = ClimbLog.all
-    @climb_logs_by_date = @climb_logs.group_by { |climb_log| climb_log.created_at.to_date }
+    @climb_logs_by_date = @climb_logs.group_by { |climb_log| climb_log.date.to_date }
   end
 
   def show

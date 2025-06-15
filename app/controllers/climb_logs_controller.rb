@@ -60,6 +60,6 @@ class ClimbLogsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def climb_log_params
-      params.require(:climb_log).permit(:date, :location, :route_name, :grade, :status)
+      params.require(:climb_log).permit(:date, :location, :route_name, :grade, :status, :tries)
     end
 end

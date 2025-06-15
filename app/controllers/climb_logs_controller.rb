@@ -3,7 +3,7 @@ class ClimbLogsController < ApplicationController
   before_action :set_climb_log, only: %i[ show edit update destroy ]
 
   def index
-    @climb_logs = ClimbLog.all
+    @climb_logs = ClimbLog.all.order(:date).reverse
     @climb_logs_by_date = @climb_logs.group_by { |climb_log| climb_log.date.to_date }
   end
 

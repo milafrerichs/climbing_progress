@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_14_140801) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_16_211859) do
   create_table "climb_logs", force: :cascade do |t|
     t.date "date"
     t.string "location"
@@ -22,6 +22,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_14_140801) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "tries"
+    t.integer "climb_type"
     t.index ["user_id"], name: "index_climb_logs_on_user_id"
   end
 

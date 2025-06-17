@@ -1,4 +1,5 @@
 class ClimbLog < ApplicationRecord
+  enum :climb_type, %i[Unspecific Slab Overhang Dynamic]
   belongs_to :user
 
   validates :status, inclusion: { in: %w[Flash Top Project] }

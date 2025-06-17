@@ -6,6 +6,7 @@ FactoryBot.define do
     grade { Faker::Number.non_zero_digit }
     sequence :status, %w[Flash Top Project].cycle
     sequence :climb_type, ClimbLog.climb_types.values.cycle
+    user
     tries {
       if status == 'Flash'
         1

@@ -23,4 +23,11 @@ RSpec.describe ClimbLog, type: :model do
       expect(subject).not_to be_valid
     end
   end
+  context '#last_30_days' do
+    it 'should return climbs from the last 30 days' do
+      FactoryBot.create(:climb_log, :yesterday)
+      FactoryBot.create(:climb_log, date: 40.days.ago)
+      expect(ClimbLog.last_30_days.count).to eq(1)
+    end
+  end
 end

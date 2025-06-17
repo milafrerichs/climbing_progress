@@ -6,6 +6,8 @@ class ClimbLog < ApplicationRecord
   validates :tries, numericality: { greater_than_or_equal_to: 1 }
   validate :status_consistent_with_tries
 
+  scope :last_30_days, -> { where(date: 30.days.ago...) }
+
   def status_consistent_with_tries
     if status
       if tries == 1 && status != "Flash"

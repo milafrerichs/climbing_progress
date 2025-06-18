@@ -7,6 +7,7 @@ class ClimbLog < ApplicationRecord
   validate :status_consistent_with_tries
 
   scope :last_30_days, -> { where(date: 30.days.ago...) }
+  scope :from_90_to_30_days_ago, -> { where(date: 90.days.ago...30.days.ago) }
 
   def status_consistent_with_tries
     if status

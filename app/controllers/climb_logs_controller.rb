@@ -5,8 +5,6 @@ class ClimbLogsController < ApplicationController
   def index
     @climb_logs = current_user.climb_logs.last_30_days.order(:date)
     @climb_logs_by_date = @climb_logs.group_by { |climb_log| climb_log.date.to_date }
-
-    @average_per_day = @climb_logs.count / @climb_logs_by_date.size if @climb_logs_by_date.size > 0
   end
 
   def show

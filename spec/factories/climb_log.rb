@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :climb_log do
-    date { Faker::Date.in_date_period }
+    date { Faker::Date.between(from: 30.days.ago, to: Date.today) }
     route_name { Faker::Name.name }
     location { Faker::FunnyName.name }
     grade { Faker::Number.non_zero_digit }

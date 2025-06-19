@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_16_211859) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_19_082743) do
   create_table "climb_logs", force: :cascade do |t|
     t.date "date"
     t.string "location"
     t.string "route_name"
-    t.string "grade"
+    t.decimal "grade"
     t.string "status"
     t.text "notes"
     t.integer "user_id", null: false

@@ -12,6 +12,8 @@ class ClimbLogsController < ApplicationController
 
   def new
     @climb_log = ClimbLog.new
+
+    session[:add_another] ||= false
   end
 
   def edit
@@ -19,11 +21,16 @@ class ClimbLogsController < ApplicationController
 
   def create
     @climb_log = current_user.climb_logs.build(climb_log_params)
+    session[:add_another] = params[:climb_log][:add_another] == "true"
 
     respond_to do |format|
       if @climb_log.save
-        format.html { redirect_to @climb_log, notice: "Climb log was successfully created." }
-        format.json { render :show, status: :created, location: @climb_log }
+        if session[:add_another]
+          format.html { redirect_to new_climb_log_path, notice: "Climb log was successfully created." }
+        else
+          format.html { redirect_to @climb_log, notice: "Climb log was successfully created." }
+          format.json { render :show, status: :created, location: @climb_log }
+        end
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @climb_log.errors, status: :unprocessable_entity }

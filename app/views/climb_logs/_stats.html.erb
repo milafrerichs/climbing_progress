@@ -26,7 +26,7 @@
         <p class="ml-16 truncate text-sm font-medium text-gray-500">Avg. Grade</p>
       </dt>
       <dd class="ml-16 flex items-baseline">
-        <p class="text-2xl font-semibold text-gray-900"><%= @climb_logs.average(:grade) %></p>
+        <p class="text-2xl font-semibold text-gray-900"><%= number_with_precision(@climb_logs.average(:grade), precision: 1) %></p>
       </dd>
     </div>
     <div class="relative overflow-hidden rounded-lg bg-white px-4 pt-5 pb-5 shadow-sm sm:px-6 sm:pt-6">
@@ -37,11 +37,11 @@
         <p class="ml-16 truncate text-sm font-medium text-gray-500">Avg. Climbs per Session</p>
       </dt>
       <dd class="ml-16 flex items-baseline">
-        <p class="text-2xl font-semibold text-gray-900"><%= current_user.stats.climbs.average_per_day %></p>
+        <p class="text-2xl font-semibold text-gray-900"><%= number_with_precision(current_user.stats.climbs.average_per_day, precision: 1) %></p>
         <% if current_user.stats.climbs.average_per_day_increase? %>
-          <%= render "increase", increased_by: current_user.stats.climbs.average_per_day_increase_by %>
+          <%= render "increase", increased_by: number_with_precision(current_user.stats.climbs.average_per_day_increase_by, precision: 1) %>
         <% else %>
-          <%= render "decrease", decreased_by: current_user.stats.climbs.average_per_day_increase_by * -1 %>
+          <%= render "decrease", decreased_by: number_with_precision(current_user.stats.climbs.average_per_day_increase_by * -1, precision: 1) %>
         <% end %>
         </p>
       </dd>

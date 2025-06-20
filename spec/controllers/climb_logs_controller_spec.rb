@@ -26,15 +26,16 @@ RSpec.describe ClimbLogsController, type: :controller do
   end
 
   describe "POST #create" do
+    let(:location) { FactoryBot.create(:location) }
     context "with valid parameters" do
       it "creates a new climb_log" do
         expect {
-          post :create, params: { climb_log: FactoryBot.attributes_for(:climb_log) }
+          post :create, params: { climb_log: FactoryBot.attributes_for(:climb_log, location_id: location.id) }
         }.to change(ClimbLog, :count).by(1)
       end
 
       it "redirects to the created climb_log" do
-        post :create, params: { climb_log: FactoryBot.attributes_for(:climb_log) }
+        post :create, params: { climb_log: FactoryBot.attributes_for(:climb_log, location_id: location.id) }
         expect(response).to redirect_to(climb_log_url(ClimbLog.last))
       end
     end

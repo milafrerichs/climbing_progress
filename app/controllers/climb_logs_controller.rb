@@ -3,7 +3,7 @@ class ClimbLogsController < ApplicationController
   before_action :set_climb_log, only: %i[ show edit update destroy ]
 
   def index
-    @climb_logs = current_user.climb_logs.last_30_days.order(:date)
+    @climb_logs = current_user.climb_logs.includes(:location).last_30_days.order(:date)
     @climb_logs_by_date = @climb_logs.group_by { |climb_log| climb_log.date.to_date }
   end
 
@@ -67,6 +67,6 @@ class ClimbLogsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def climb_log_params
-      params.require(:climb_log).permit(:date, :location, :route_name, :grade, :status, :tries)
+      params.require(:climb_log).permit(:date, :location_id, :route_name, :grade, :status, :tries)
     end
 end

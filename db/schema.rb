@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_19_082743) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_19_144207) do
+  create_table "areas", force: :cascade do |t|
+    t.string "name"
+    t.integer "location_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_areas_on_location_id"
+  end
+
   create_table "climb_logs", force: :cascade do |t|
     t.date "date"
-    t.string "location"
     t.string "route_name"
     t.decimal "grade"
     t.string "status"
@@ -23,7 +30,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_19_082743) do
     t.datetime "updated_at", null: false
     t.integer "tries"
     t.integer "climb_type"
+    t.integer "location_id"
+    t.index ["location_id"], name: "index_climb_logs_on_location_id"
     t.index ["user_id"], name: "index_climb_logs_on_user_id"
+  end
+
+  create_table "locations", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -38,5 +53,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_19_082743) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "areas", "locations"
+  add_foreign_key "climb_logs", "locations"
   add_foreign_key "climb_logs", "users"
 end

@@ -1,3 +1,6 @@
+<% content_for :head do %>
+<%= javascript_import_module_tag "climb_logs/form" %>
+<% end %>
 <%= form_with(model: climb_log) do |form| %>
   <div class="space-y-12" x-data="{ addAnother: <%= session[:add_another] %>}">
     <div class="border-b border-gray-900/10 pb-12">
@@ -26,15 +29,73 @@
         </div>
       </div>
 
-      <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+      <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6" x-data="select()" x-init="init()">
         <div class="sm:col-span-4">
           <%= form.label :location, class: "block text-sm/6 font-medium text-gray-900" %>
-          <div class="mt-2">
-            <div class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-blue-600">
-              <%= form.text_field :location, class: "block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6", placeholder: ""%>
+          <div class="flex flex-col items-center relative">
+     <div @click="open" class="w-full" @click.away="close()">
+       <div class="p-1 flex shadow-sm ring-1 ring-inset ring-gray-300 rounded-md focus:ring-inset focus:ring-primary-600">
+         <div class="flex flex-auto flex-wrap">
+           <input type="text" x-model="search" x-ref="searchInput" placeholder="Type to search..." class="w-full p-2 appearance-none outline-none">
+         </div>
+ 
+         <div class="text-gray-300 w-8 py-1 pl-2 pr-1 border-l flex items-center border-gray-200">
+           <button type="button" x-show="show" @click="open" class="w-6 h-6 text-gray-600 outline-none focus:outline-none">
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+           </button>
+ 
+           <button type="button" x-show="!show" @click="close" class="w-6 h-6 text-gray-600 outline-none focus:outline-none">
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M10.707 7.05L10 6.343 4.343 12l1.414 1.414L10 9.172l4.243 4.242L15.657 12z"/></svg>
+           </button>
+         </div>
+       </div>
+     </div>
+ 
+       <div x-show.transition.origin.top="show"
+         class="absolute shadow top-12 bg-white z-40 w-full left-0 rounded max-h-select overflow-y-auto"
+         @click.away="close">
+         <div class="flex flex-col w-full">
+
+      <ul class="max-h-56 overflow-auto">
+        <template x-for="option in filteredOptions" :key="option.index">
+          <li
+            class="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9 hover:bg-gray-100"
+            :class="{ 'font-semibold': selected === option.index, 'opacity-50 cursor-not-allowed': option.selected }"
+            id="listbox-option-0"
+            role="option"
+            @click.stop="select(option.index)"
+          >
+            <div class="flex items-center">
+              <span class="font-normal block truncate" x-text="option.text"></span>
             </div>
-          </div>
+
+            <span
+              x-show="selected === option.index"
+              class="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600"
+            >
+              <!-- Heroicon name: solid/check -->
+              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            </span>
+          </li>
+        </template>
+        <template x-if="filteredOptions.length === 0">
+            <li class="text-gray-500 py-2 px-4" x-show="search !== ''">
+              <a href="#" @click.prevent.stop="createNewLocation()"><span x-text="noResultsMessage"></span><span x-text="search"></span></a>
+            </li>
+        </template>
+      </ul>
+         </div>
         </div>
+        <%= form.select :location,
+   options_for_select(Location.all.map.with_index { |location, index|
+     [location.name, location.id, { ':selected' => "options[#{index}].selected" }]
+   }, form.object.send(:location)),
+   { },
+   class: "hidden",
+   "x-ref": "hiddenSelect"
+ %>
       </div>
 
       <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">

@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :climb_log do
     date { Faker::Date.between(from: 30.days.ago, to: Date.today) }
     route_name { Faker::Name.name }
-    location { Faker::FunnyName.name }
+    location
     grade { Faker::Number.non_zero_digit }
     sequence :status, %w[Flash Top Project].cycle
     sequence :climb_type, ClimbLog.climb_types.values.cycle

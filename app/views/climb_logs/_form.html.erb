@@ -88,10 +88,10 @@
       </ul>
          </div>
         </div>
-        <%= form.select :location,
+        <%= form.select :location_id,
    options_for_select(Location.all.map.with_index { |location, index|
      [location.name, location.id, { ':selected' => "options[#{index}].selected" }]
-   }, form.object.send(:location)),
+   }, form.object.send(:location_id)),
    { },
    class: "hidden",
    "x-ref": "hiddenSelect"

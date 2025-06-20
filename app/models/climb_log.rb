@@ -1,7 +1,7 @@
 class ClimbLog < ApplicationRecord
   enum :climb_type, %i[Unspecific Slab Overhang Dynamic]
   belongs_to :user
-  belongs_to :location, strict_loading: true
+  belongs_to :location
 
   validates :status, inclusion: { in: %w[Flash Top Project] }
   validates :tries, numericality: { greater_than_or_equal_to: 1 }

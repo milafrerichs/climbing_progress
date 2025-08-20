@@ -1,31 +1,59 @@
 class ClimbLogsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_climb_log, only: %i[ show edit update destroy ]
+  # before_action :set_climb_session
+  before_action :set_climb_session, only: %i[ new create ]
 
   def index
     @climb_logs = current_user.climb_logs.includes(:location).last_30_days.order(:date)
     @climb_logs_by_date = @climb_logs.group_by { |climb_log| climb_log.date.to_date }
+    if params[:climb_session_id]
+      @climb_session = ClimbSession.find(params[:climb_session_id])
+      @climb_logs = @climb_session.climb_logs.all
+    else
+      # If no climb_session_id, show all climb logs (or redirect, or raise error)
+      @climb_logs = ClimbLog.all
+    end
   end
 
   def show
   end
 
   def new
-    @climb_log = ClimbLog.new
-
     session[:add_another] ||= false
+    if params[:climb_session_id].present?
+      @climb_log = @climb_session.climb_logs.build(
+        date: @climb_session.start,
+        location_id: @climb_session.location_id, # Assumes ClimbSession has location_id
+        user: @climb_session.user # Pre-fill user based on session owner
+      )
+    else
+      @climb_log = ClimbLog.new
+    end
   end
 
   def edit
   end
 
   def create
-    @climb_log = current_user.climb_logs.build(climb_log_params)
+    if params[:climb_session_id].present?
+      @climb_log = @climb_session.climb_logs.build(climb_log_params)
+      @climb_log.user = @climb_session.user
+    else
+      @climb_log = current_user.climb_logs.build(climb_log_params)
+    end
     session[:add_another] = params[:climb_log][:add_another] == "true"
 
     respond_to do |format|
       if @climb_log.save
-        if session[:add_another]
+        if @climb_log.climb_session_id?
+          if session[:add_another]
+            format.html { redirect_to new_climb_session_climb_log_path(@climb_log.climb_session), notice: "Climb log was successfully created." }
+          else
+            format.html { redirect_to climb_session_climb_logs_path(@climb_log.climb_session), notice: "Climb log was successfully created." }
+            format.json { render :show, status: :created, location: @climb_log }
+          end
+        elsif session[:add_another]
           format.html { redirect_to new_climb_log_path, notice: "Climb log was successfully created." }
         else
           format.html { redirect_to @climb_log, notice: "Climb log was successfully created." }
@@ -63,6 +91,13 @@ class ClimbLogsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_climb_log
       @climb_log = ClimbLog.find(params[:id])
+    end
+
+    # Fetches the parent ClimbSession before new and create actions
+    def set_climb_session
+      if params[:climb_session_id].present?
+        @climb_session = ClimbSession.find(params[:climb_session_id])
+      end
     end
 
     # Only allow a list of trusted parameters through.

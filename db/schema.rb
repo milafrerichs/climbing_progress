@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_19_144207) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_16_060856) do
   create_table "areas", force: :cascade do |t|
     t.string "name"
     t.integer "location_id", null: false
@@ -31,14 +31,38 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_19_144207) do
     t.integer "tries"
     t.integer "climb_type"
     t.integer "location_id"
+    t.integer "climb_session_id"
+    t.index ["climb_session_id"], name: "index_climb_logs_on_climb_session_id"
     t.index ["location_id"], name: "index_climb_logs_on_location_id"
     t.index ["user_id"], name: "index_climb_logs_on_user_id"
+  end
+
+  create_table "climb_sessions", force: :cascade do |t|
+    t.string "name"
+    t.datetime "start"
+    t.datetime "end"
+    t.integer "location_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["location_id"], name: "index_climb_sessions_on_location_id"
+    t.index ["user_id"], name: "index_climb_sessions_on_user_id"
   end
 
   create_table "locations", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "sessions", force: :cascade do |t|
+    t.string "name"
+    t.datetime "start"
+    t.datetime "end"
+    t.integer "location_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_sessions_on_location_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -54,6 +78,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_19_144207) do
   end
 
   add_foreign_key "areas", "locations"
+  add_foreign_key "climb_logs", "climb_sessions"
   add_foreign_key "climb_logs", "locations"
   add_foreign_key "climb_logs", "users"
+  add_foreign_key "climb_sessions", "locations"
+  add_foreign_key "climb_sessions", "users"
+  add_foreign_key "sessions", "locations"
 end

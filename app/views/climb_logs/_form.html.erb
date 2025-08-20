@@ -1,6 +1,32 @@
 <% content_for :head do %>
 <%= javascript_import_module_tag "climb_logs/form" %>
 <% end %>
+<% if @climb_session %>
+  <%= form_with(model: [@climb_session, climb_log]) do |form| %>
+  <div class="space-y-12" x-data="{ addAnother: <%= session[:add_another] %>}">
+      <% if climb_log.errors.any? %>
+        <div style="color: red">
+          <h2><%= pluralize(climb_log.errors.count, "error") %> prohibited this climb_log from being saved:</h2>
+
+          <ul>
+            <% climb_log.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+    <%= form.hidden_field :climb_session_id, value: @climb_session.id %>
+    <%= form.hidden_field :location_id, value: @climb_session.location_id %>
+    <%= form.hidden_field :date, value: climb_log.date %>
+    <%= render 'form_fields', form: form %>
+      <div class="mt-5">
+        <%= form.submit class: "rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" %>
+      </div>
+
+  </div>
+  <% end %>
+<% else %>
 <%= form_with(model: climb_log) do |form| %>
   <div class="space-y-12" x-data="{ addAnother: <%= session[:add_another] %>}">
     <div class="border-b border-gray-900/10 pb-12">
@@ -97,74 +123,9 @@
    "x-ref": "hiddenSelect"
  %>
       </div>
-
-      <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-        <div class="sm:col-span-4">
-          <%= form.label :route_name, class: "block text-sm/6 font-medium text-gray-900" %>
-          <div class="mt-2">
-            <div class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-blue-600">
-              <%= form.text_field :route_name , class: "block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6", placeholder: ""%>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <fieldset aria-label="Choose a memory option" class="mt-10">
-        <div class="flex items-center justify-between">
-          <div class="text-sm/6 font-medium text-gray-900">Type of climb</div>
-        </div>
-        <div class="mt-2 grid grid-cols-3 gap-3 sm:grid-cols-6">
-          <% ClimbLog.climb_types.each do |name, value| %>
-            <label aria-label="<%= name %>" class="group relative flex items-center justify-center rounded-md border border-gray-300 bg-white p-3 has-checked:border-blue-600 has-checked:bg-blue-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-blue-600 has-disabled:opacity-25">
-              <%= form.radio_button :climb_type, value, class: "absolute inset-0 appearance-none focus:outline-none disabled:cursor-not-allowed" %>
-              <span class="text-sm font-medium group-has-checked:text-white"><%= name %></span>
-            </label>
-          <% end %>
-        </div>
-      </fieldset>
-
-
-      <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-        <div class="sm:col-span-4">
-          <%= form.label :grade, class: "block text-sm/6 font-medium text-gray-900" %>
-          <div class="mt-2">
-            <div class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-blue-600">
-              <%= form.text_field :grade, class: "block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6", placeholder: ""%>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-        <div class="sm:col-span-4">
-          <%= form.label :tries, class: "block text-sm/6 font-medium text-gray-900" %>
-          <div class="mt-2">
-            <div class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-blue-600">
-              <%= form.number_field :tries, class: "block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6", step: 1, min: 1 %>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-        <div class="sm:col-span-4">
-          <%= form.label :status, class: "block text-sm/6 font-medium text-gray-900" %>
-          <div class="mt-2 grid grid-cols-1">
-            <%= form.select :status, ["Flash", "Top", "Project"], {}, { class: "flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-blue-600" } %>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex items-center mt-10">
-        <button @click="addAnother = !addAnother" type="button" class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent  transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:outline-hidden" role="switch" aria-checked="false" aria-labelledby="annual-billing-label" :class="addAnother ? 'bg-blue-600' : 'bg-gray-200'">
-          <span aria-hidden="true" class="pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out" :class="addAnother ? 'translate-x-5' : 'translate-x-0'"></span>
-        </button>
-        <span class="ml-3 text-sm" id="create-another-label">
-          <span class="font-medium text-gray-900">Create another after saving</span>
-        </span>
-        <%= form.hidden_field :add_another, { ":value": "addAnother" } %>
-      </div>
-
+      <%= render 'form_fields', form: form %>
       <div class="mt-5">
         <%= form.submit class: "rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" %>
       </div>
+    <% end %>
     <% end %>

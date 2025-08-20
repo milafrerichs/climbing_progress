@@ -5,14 +5,12 @@ class ClimbLogsController < ApplicationController
   before_action :set_climb_session, only: %i[ new create ]
 
   def index
-    @climb_logs = current_user.climb_logs.includes(:location).last_30_days.order(:date)
-    @climb_logs_by_date = @climb_logs.group_by { |climb_log| climb_log.date.to_date }
     if params[:climb_session_id]
       @climb_session = ClimbSession.find(params[:climb_session_id])
-      @climb_logs = @climb_session.climb_logs.all
+      @climb_logs = @climb_session.climb_logs.includes(:location).all
     else
-      # If no climb_session_id, show all climb logs (or redirect, or raise error)
-      @climb_logs = ClimbLog.all
+      @climb_logs = current_user.climb_logs.includes(:location).last_30_days.order(:date)
+      @climb_logs_by_date = @climb_logs.group_by { |climb_log| climb_log.date.to_date } || []
     end
   end
 

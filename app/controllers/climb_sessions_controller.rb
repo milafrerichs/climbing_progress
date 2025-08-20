@@ -3,7 +3,7 @@ class ClimbSessionsController < ApplicationController
 
   # GET /climb_sessions or /climb_sessions.json
   def index
-    @climb_sessions = ClimbSession.order(:end)
+    @climb_sessions = current_user.climb_sessions.order(:end)
   end
 
   # GET /climb_sessions/1 or /climb_sessions/1.json

@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :climb_logs, dependent: :destroy
+  has_many :climb_sessions
 
   def stats
     @stats ||= User::Stats.new(self)

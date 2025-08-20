@@ -1,0 +1,9 @@
+<span id="climb-session-duration-<%= climb_session.id %>"
+      data-climb-session-id="<%= climb_session.id %>"
+>
+  <% if climb_session.start.present? %>
+    <%= format_duration_in_hours_minutes(duration_seconds_since_start(climb_session.start)) %>
+  <% else %>
+    N/A
+  <% end %>
+</span>

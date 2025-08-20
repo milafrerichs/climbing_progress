@@ -1,4 +1,11 @@
 Rails.application.routes.draw do
+  resources :climb_sessions do
+    resources :climb_logs, only: [ :index, :new, :create ]
+    member do
+      patch :end_session
+      get :end_session
+    end
+  end
   resources :climb_logs
   resources :locations
   devise_for :users

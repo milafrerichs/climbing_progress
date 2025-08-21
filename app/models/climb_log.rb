@@ -1,5 +1,7 @@
 class ClimbLog < ApplicationRecord
+  attribute :status_types, :string
   enum :climb_type, %i[Unspecific Slab Overhang Dynamic]
+  enum :status_types, %i[Flash Top Project]
   belongs_to :user
   belongs_to :location
   belongs_to :climb_session, optional: true
@@ -15,10 +17,8 @@ class ClimbLog < ApplicationRecord
     if status
       if tries == 1 && status != "Flash"
         errors.add(:status, "must be Flash if tries is 1")
-      elsif tries > 1 && tries <= 5 && status != "Top"
-        errors.add(:status, "must be Top if tries is between 1 and 5")
-      elsif tries > 5 && status != "Project"
-        errors.add(:status, "must be Project if tries is > 5")
+      elsif tries > 1 && (status != "Top" || status != "Project")
+        errors.add(:status, "must be Top if tries is greater than 1")
       end
     end
   end

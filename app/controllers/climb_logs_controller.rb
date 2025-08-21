@@ -9,7 +9,7 @@ class ClimbLogsController < ApplicationController
       @climb_session = ClimbSession.find(params[:climb_session_id])
       @climb_logs = @climb_session.climb_logs.includes(:location).all
     else
-      @climb_logs = current_user.climb_logs.includes(:location).last_30_days.order(:date)
+      @climb_logs = current_user.climb_logs.includes(:location).last_30_days.order(date: :desc)
       @climb_logs_by_date = @climb_logs.group_by { |climb_log| climb_log.date.to_date } || []
     end
   end

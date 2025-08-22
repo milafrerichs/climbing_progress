@@ -2,67 +2,180 @@
 
 <div class="w-full">
   <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
+    <p
+      class="
+        py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md
+        inline-block
+      "
+      id="notice"
+    >
+      <%= notice %>
+    </p>
   <% end %>
-
   <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Climb sessions</h1>
+    <h1 class="font-bold text-4xl">
+      Climb sessions
+    </h1>
     <%= link_to "New climb session", new_climb_session_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
   </div>
-
-  <div id="climb_sessions" class="min-w-full divide-y divide-gray-200 space-y-5">
+  <div
+    id="climb_sessions"
+    class="min-w-full divide-y divide-gray-200 space-y-5"
+  >
     <% if @climb_sessions.any? %>
       <ul role="list" class="divide-y divide-gray-100 dark:divide-white/5">
-      <% @climb_sessions.each do |climb_session| %>
-  <li class="flex items-center justify-between gap-x-6 py-5">
-    <div class="min-w-0">
-      <div class="flex items-start gap-x-3">
-        <p class="text-sm/6 font-semibold text-gray-900 dark:text-white"><%= climb_session.location.name %></p>
-        <% if climb_session.end %>
-        <p class="mt-0.5 rounded-md bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 inset-ring inset-ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:inset-ring-green-500/20">Completed</p>
-      <% else %>
-        <p class="mt-0.5 rounded-md bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-green-700 inset-ring inset-ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:inset-ring-green-500/20">Active</p>
-      <% end %>
-      </div>
-      <div class="mt-1 flex items-center gap-x-2 text-xs/5 text-gray-500 dark:text-gray-400">
-        <p class="truncate"><%= climb_session.date_str %></p>
-        <svg viewBox="0 0 2 2" class="size-0.5 fill-current">
-          <circle r="1" cx="1" cy="1" />
-        </svg>
-        <% if climb_session.end %>
-          <p class="whitespace-nowrap"><%= format_duration_in_hours_minutes(climb_session.duration) %></p>
-        <% else %>
-          <p class="whitespace-nowrap">Started <time datetime="2023-03-17T00:00Z"><%= session_duration(climb_session) %></time> ago</p>
+        <% @climb_sessions.each do |climb_session| %>
+          <li class="flex items-center justify-between gap-x-6 py-5">
+            <div class="min-w-0">
+              <div class="flex items-start gap-x-3">
+                <p
+                  class="text-sm/6 font-semibold text-gray-900 dark:text-white"
+                >
+                  <%= climb_session.location.name %>
+                </p>
+                <% if climb_session.end %>
+                  <p
+                    class="
+                      mt-0.5 rounded-md bg-green-50 px-1.5 py-0.5 text-xs
+                      font-medium text-green-700 inset-ring
+                      inset-ring-green-600/20 dark:bg-green-400/10
+                      dark:text-green-400 dark:inset-ring-green-500/20
+                    "
+                  >
+                    Completed
+                  </p>
+                <% else %>
+                  <p
+                    class="
+                      mt-0.5 rounded-md bg-blue-50 px-1.5 py-0.5 text-xs
+                      font-medium text-green-700 inset-ring
+                      inset-ring-green-600/20 dark:bg-green-400/10
+                      dark:text-green-400 dark:inset-ring-green-500/20
+                    "
+                  >
+                    Active
+                  </p>
+                <% end %>
+              </div>
+              <div
+                class="
+                  mt-1 flex items-center gap-x-2 text-xs/5 text-gray-500
+                  dark:text-gray-400
+                "
+              >
+                <p class="truncate">
+                  <%= climb_session.date_str %>
+                </p>
+                <svg viewBox="0 0 2 2" class="size-0.5 fill-current">
+                  <circle r="1" cx="1" cy="1" />
+                </svg>
+                <% if climb_session.end %>
+                  <p class="whitespace-nowrap">
+                    <%= format_duration_in_hours_minutes(climb_session.duration) %>
+                  </p>
+                <% else %>
+                  <p class="whitespace-nowrap">
+                    Started
+                    <time datetime="2023-03-17T00:00Z"><%= session_duration(climb_session) %></time>
+                    ago
+                  </p>
+                <% end %>
+                <svg viewBox="0 0 2 2" class="size-0.5 fill-current">
+                  <circle r="1" cx="1" cy="1" />
+                </svg>
+                <p class="truncate">
+                  <%= climb_session.climb_logs.size %> climbs
+                </p>
+              </div>
+            </div>
+            <div class="flex flex-none items-center gap-x-4">
+              <a
+                href="<%= climb_session_path(climb_session) %>"
+                class="
+                  hidden rounded-md bg-white px-2.5 py-1.5 text-sm
+                  font-semibold text-gray-900 shadow-xs inset-ring
+                  inset-ring-gray-300 hover:bg-gray-50 sm:block
+                  dark:bg-white/10 dark:text-white dark:shadow-none
+                  dark:inset-ring-white/5 dark:hover:bg-white/20
+                "
+              >
+                View Session<span class="sr-only">, Session</span>
+              </a>
+              <el-dropdown class="relative flex-none">
+                <button
+                  class="
+                    relative block text-gray-500 hover:text-gray-900
+                    dark:text-gray-400 dark:hover:text-white
+                  "
+                >
+                  <span class="absolute -inset-2.5"></span>
+                  <span class="sr-only">Open options</span>
+                  <svg
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    data-slot="icon"
+                    aria-hidden="true"
+                    class="size-5"
+                  >
+                    <path
+                      d="M10 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM10 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.5 15.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z"
+                    />
+                  </svg>
+                </button>
+                <el-menu
+                  anchor="bottom end"
+                  popover
+                  class="
+                    w-32 origin-top-right rounded-md bg-white py-2 shadow-lg
+                    outline-1 outline-gray-900/5 transition
+                    transition-discrete [--anchor-gap:--spacing(2)]
+                    data-closed:scale-95 data-closed:transform
+                    data-closed:opacity-0 data-enter:duration-100
+                    data-enter:ease-out data-leave:duration-75
+                    data-leave:ease-in dark:bg-gray-800 dark:shadow-none
+                    dark:-outline-offset-1 dark:outline-white/10
+                  "
+                >
+                  <a
+                    href="<%= climb_session_path(climb_session) %>"
+                    class="
+                      block px-3 py-1 text-sm/6 text-gray-900
+                      focus:bg-gray-50 focus:outline-hidden dark:text-white
+                      dark:focus:bg-white/5
+                    "
+                  >
+                    Show<span class="sr-only">, Climb Session</span>
+                  </a>
+                  <a
+                    href="#"
+                    class="
+                      block px-3 py-1 text-sm/6 text-gray-900
+                      focus:bg-gray-50 focus:outline-hidden dark:text-white
+                      dark:focus:bg-white/5
+                    "
+                  >
+                    Move<span class="sr-only">, GraphQL API</span>
+                  </a>
+                  <a
+                    href="#"
+                    class="
+                      block px-3 py-1 text-sm/6 text-gray-900
+                      focus:bg-gray-50 focus:outline-hidden dark:text-white
+                      dark:focus:bg-white/5
+                    "
+                  >
+                    Delete<span class="sr-only">, GraphQL API</span>
+                  </a>
+                </el-menu>
+              </el-dropdown>
+            </div>
+          </li>
         <% end %>
-        <svg viewBox="0 0 2 2" class="size-0.5 fill-current">
-          <circle r="1" cx="1" cy="1" />
-        </svg>
-        <p class="truncate"><%= climb_session.climb_logs.size %> climbs</p>
-      </div>
-    </div>
-    <div class="flex flex-none items-center gap-x-4">
-      <a href="<%= climb_session_path(climb_session) %>" class="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 sm:block dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20">View Session<span class="sr-only">, GraphQL API</span></a>
-      <el-dropdown class="relative flex-none">
-        <button class="relative block text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-          <span class="absolute -inset-2.5"></span>
-          <span class="sr-only">Open options</span>
-          <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5">
-            <path d="M10 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM10 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.5 15.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
-          </svg>
-        </button>
-        <el-menu anchor="bottom end" popover class="w-32 origin-top-right rounded-md bg-white py-2 shadow-lg outline-1 outline-gray-900/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
-          <a href="#" class="block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 focus:outline-hidden dark:text-white dark:focus:bg-white/5">Edit<span class="sr-only">, GraphQL API</span></a>
-          <a href="#" class="block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 focus:outline-hidden dark:text-white dark:focus:bg-white/5">Move<span class="sr-only">, GraphQL API</span></a>
-          <a href="#" class="block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 focus:outline-hidden dark:text-white dark:focus:bg-white/5">Delete<span class="sr-only">, GraphQL API</span></a>
-        </el-menu>
-      </el-dropdown>
-    </div>
-  </li>
-
-      <% end %>
-</ul>
+      </ul>
     <% else %>
-      <p class="text-center my-10">No climb sessions found.</p>
+      <p class="text-center my-10">
+        No climb sessions found.
+      </p>
     <% end %>
   </div>
 </div>

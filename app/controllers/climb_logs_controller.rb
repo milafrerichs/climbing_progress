@@ -48,7 +48,7 @@ class ClimbLogsController < ApplicationController
           if session[:add_another]
             format.html { redirect_to new_climb_session_climb_log_path(@climb_log.climb_session), notice: "Climb log was successfully created." }
           else
-            format.html { redirect_to climb_session_climb_logs_path(@climb_log.climb_session), notice: "Climb log was successfully created." }
+            format.html { redirect_to climb_session_path(@climb_log.climb_session), notice: "Climb log was successfully created." }
             format.json { render :show, status: :created, location: @climb_log }
           end
         elsif session[:add_another]
